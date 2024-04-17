@@ -1,6 +1,7 @@
 const express = require('express')
 const {createHmac} = require('crypto')
 const knex = require('knex')(require('./knexfile.js')['development'])
+const cors = require('cors')
 
 const hash = input => createHmac('sha256',input[1]).update(input[0]).digest('hex')
 
@@ -9,6 +10,14 @@ const server = express()
 const port = 8080
 
 server.use(express.json())
+
+server.use(cors())
+
+server.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+    next()
+})
 
 server.get('/', (req, res) => {
     res.status(200).send('<!doctype html><html lang="en"><head><title>epic api</title><style>body{font-family:Ubuntu,"Segoe UI",sans-serif;}</style></head><body><h1>hi</h1><p>whatcha doin here</p></body></html>')
@@ -27,7 +36,7 @@ server.post('/users', (req, res) => {
     }
     knex('users').select('username').where('username', 'like', user.username).then(data => {
         if(!data.length){
-            knex('users').insert(user, ['id']).then(data => res.status(201).json(data))
+            knex('users').insert(user, ['id','firstname','lastname','username']).then(data => res.status(201).json(data[0]))
         }else{
             res.status(409).send('username taken')
         }
