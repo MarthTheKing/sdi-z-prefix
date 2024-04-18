@@ -115,7 +115,7 @@ server.post('/items', (req, res) => {
         desc: req.body.desc || 'new item',
         quantity: req.body.quantity || 1,
     }
-    knex('items').insert(newitem).then(() => res.status(201).send('coolio'))
+    knex('items').insert(newitem, ['id']).then(id => res.status(201).json({id}))
 })
 
 server.patch('/items/:id', (req, res) => {

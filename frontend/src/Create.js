@@ -2,7 +2,6 @@ import React from 'react'
 import {useNavigate} from 'react-router-dom'
 import EpicMegaContext from './EpicMegaContext'
 import styled from 'styled-components'
-import Cookies from 'js-cookie'
 
 const BlurBackground = styled.div`
     z-index: 1;
@@ -62,7 +61,7 @@ const CloseButton = styled.button`
     height: 25px;
 `
 
-export default function Register(){
+export default function Create(){
     const navigate = useNavigate()
     const {user, setUser} = React.useContext(EpicMegaContext)
     return(<>
@@ -71,33 +70,18 @@ export default function Register(){
         }}>X</CloseButton>
         <BlurBackground/>
         <Box>
-            <Input id='firstname' type='text' placeholder='first name' />
-            <Input id='lastname' type='text' placeholder='last name' />
-            <Input id='username' type='text' placeholder='username' />
-            <Input id='password' type='password' placeholder='password' />
-            <Input id='passwordagain' type='password' placeholder='confirm password' />
+            <Input id='name' type='text' placeholder='name' />
+            <Input id='desc' type='text' placeholder='description' />
+            <Input id='quantity' type='number' placeholder='quantity' />
             <BlueButton type='button' onClick={() => {
-                let firstname = document.querySelector('#firstname').value
-                let lastname = document.querySelector('#lastname').value
-                let username = document.querySelector('#username').value
-                let password = document.querySelector('#password').value
-                let passwordagain = document.querySelector('#passwordagain').value
+                let name = document.querySelector('#name').value
+                let desc = document.querySelector('#desc').value
+                let quantity = document.querySelector('#quantity').value
 
-                let userExp = /^([0-9A-Za-z-_.]){4,12}$/
-                let nospaces = / +/
-                if(!userExp.exec(username)){
-                    return alert('Username must be between 4 and 12 characters and can only contain alphanumeric characters and dot, dash, or underbar')
-                }
-                if(password.length < 4 || nospaces.exec(password)){
-                    return alert('Password must be at least four characters and cannot contain spaces')
-                }
-                if(password !== passwordagain){
-                    return alert('Passwords don\'t match')
-                }
-                fetch('http://localhost:8080/users', {
+                fetch('http://localhost:8080/items', {
                     method: 'POST',
                     headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify({firstname, lastname, username, password})
+                    body: JSON.stringify({id:user.id, name, desc, quantity})
                 })
                 .then(response => {
                     if(!response.ok){
@@ -108,14 +92,12 @@ export default function Register(){
                 })
                 .then(data => {
                     if(typeof data === 'string'){
-                        alert('Username taken')
+                        alert('somehow it didn\'t work just try again tbh')
                     }else{
-                        navigate(`/${data.id}`)
-                        Cookies.set('login', `${username} ${password}`)
-                        setUser(data)
+                        navigate(`/${user.id}`)
                     }
                 })
-            }}>Register</BlueButton>
+            }}>Create</BlueButton>
         </Box>
     </>)
 }

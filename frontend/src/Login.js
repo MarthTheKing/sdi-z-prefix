@@ -14,7 +14,7 @@ const BlurBackground = styled.div`
     backdrop-filter: blur(10px);
 `
 
-const LoginBox = styled.div`
+const Box = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -76,7 +76,7 @@ export default function Login(){
         <CloseButton onClick={() => {
             navigate('/')
         }}>X</CloseButton>
-        <LoginBox>
+        <Box>
             <Input id='username' type='text' placeholder='username' />
             <Input id='password' type='password' placeholder='password' />
             <div style={{margin:'auto',display:'flex',justifyContent:'space-between'}}>
@@ -109,6 +109,6 @@ export default function Login(){
                     })
                 }}>Login</BlueButton>
             </div>
-        </LoginBox>
+        </Box>
     </>)
 }

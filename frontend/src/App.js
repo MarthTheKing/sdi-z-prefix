@@ -1,4 +1,4 @@
-import {Routes, Route} from 'react-router-dom'
+import {Routes, Route, useNavigate} from 'react-router-dom'
 import React from 'react'
 import styled from 'styled-components'
 import Cookies from 'js-cookie'
@@ -7,6 +7,8 @@ import Navbar from './Navbar'
 import Login from './Login'
 import Register from './Register'
 import InventorySetter from './InventorySetter'
+import Create from './Create'
+import ItemView from './ItemView'
 
 const Container = styled.div`
     padding: 20px;
@@ -24,14 +26,10 @@ const Item = styled.div`
 `
 
 export default function App(){
+    const navigate = useNavigate()
     const [itemSwitch, setItemSwitch] = React.useState(false)
     const [items, setItems] = React.useState([])
     const [user, setUser] = React.useState({})
-    React.useEffect(() => {
-        fetch('http://localhost:8080/items')
-        .then(response => response.json())
-        .then(data => setItems(data))
-    },[itemSwitch])
     React.useEffect(() => {
         if(Cookies.get('login')){
             let login = Cookies.get('login').split(' ')
@@ -61,13 +59,15 @@ export default function App(){
             <Navbar />
             <h1 style={{textAlign:'center'}}>epic inventory app</h1>
             <Container>
-                {items.map(item => (<Item key={item.id}><span style={{fontSize:'200%',fontWeight:'bold'}}>{item.name}</span><br/><span style={{fontSize:'75%',color:'gray'}}>(QTY: {item.quantity.toLocaleString()})</span><br/>{item.desc.length > 100 ? item.desc.substring(0,100) + '...' : item.desc}</Item>))}
+                {items.map(item => (<Item onClick={() => navigate(`/items/${item.id}`)} key={item.id}><span style={{fontSize:'200%',fontWeight:'bold'}}>{item.name}</span><br/><span style={{fontSize:'75%',color:'gray'}}>(QTY: {item.quantity.toLocaleString()})</span><br/>{item.desc.length > 100 ? item.desc.substring(0,100) + '...' : item.desc}</Item>))}
             </Container>
             <Routes>
-                <Route path='/' element={(<></>)} />
+                <Route path='/' element={(<InventorySetter />)} />
                 <Route path='/:id' element={<InventorySetter />} />
                 <Route path='/login' element={<Login />} />
                 <Route path='/register' element={<Register />} />
+                <Route path='/create' element={<Create />} />
+                <Route path='/items/:id' element={<ItemView />} />
             </Routes>
         </EpicMegaContext.Provider>
     )

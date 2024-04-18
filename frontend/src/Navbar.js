@@ -39,14 +39,18 @@ const ExpandedBar = styled.div`
     left: 1vw;
 `
 
-const AccountButton = styled.button`
+const BlueButton = styled.button`
     border-radius: 3px;
     display: block;
     margin-left: auto;
     margin-right: auto;
     background-color: #08f;
     color: white;
-    border: 0px solid #00f;
+    border: 0px solid;
+`
+
+const GrayButton = styled(BlueButton)`
+    background-color: #bbb;
 `
 
 export default function Navbar(){
@@ -59,13 +63,22 @@ export default function Navbar(){
             setExpanded(false)
         }}>∧</CollapseButton>
             <Spacer/>
-            <AccountButton onClick={() => {
+            <BlueButton onClick={() => {
                 if(user.username){
+                    navigate('/')
                     setUser({})
                 }else{
                     navigate('/login')
                 }
-            }}>{user.username ? 'Logout' : 'Login'}</AccountButton>
+            }}>{user.username ? 'Logout' : 'Login'}</BlueButton>
+            {user.id ? (<>
+            <Spacer/>
+            <BlueButton onClick={() => navigate('/create')}>New Item</BlueButton>
+            <Spacer/>
+            <GrayButton onClick={() => navigate(`/${user.id}`)}>My Inventory</GrayButton>
+            <Spacer/>
+            <GrayButton onClick={() => navigate('/')}>All Items</GrayButton>
+            </>) : undefined}
         </ExpandedBar>
     ) : (
         <ExpandButton onClick={() => {
